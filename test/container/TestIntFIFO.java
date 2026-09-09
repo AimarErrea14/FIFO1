@@ -36,9 +36,9 @@ public class TestIntFIFO {
         queue.insertElement(1);
         queue.insertElement(2);
 
-        queue.popElement(); // Saca el 1, libera el índice 0
-        queue.insertElement(3); // Se inserta en el índice 0 (comportamiento circular)
-        queue.insertElement(4); // El arreglo está lleno, esto fuerza el resize()
+        queue.popElement();
+        queue.insertElement(3);
+        queue.insertElement(4);
 
         assertEquals(3, queue.size());
         assertEquals(2, queue.popElement());

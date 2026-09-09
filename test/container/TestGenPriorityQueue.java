@@ -13,6 +13,7 @@ public class TestGenPriorityQueue {
         assertEquals(0, queue.size());
     }
 
+
     @Test
     public void test_stringPriorityBehavior() {
         GenPriorityQueue<String> queue = new GenPriorityQueue<>(5);
@@ -21,7 +22,6 @@ public class TestGenPriorityQueue {
         queue.insertElement("Mango");
 
         assertEquals(3, queue.size());
-        // "Zebra" es el mayor alfabéticamente
         assertEquals("Zebra", queue.popElement());
         assertEquals("Mango", queue.popElement());
         assertEquals("Apple", queue.popElement());
@@ -32,7 +32,7 @@ public class TestGenPriorityQueue {
         GenPriorityQueue<Integer> queue = new GenPriorityQueue<>(2);
         queue.insertElement(42);
         queue.insertElement(7);
-        queue.insertElement(100); // Fuerza el resize()
+        queue.insertElement(100);
 
         assertEquals(3, queue.size());
         assertEquals(100, queue.popElement());

@@ -10,10 +10,9 @@ public class IntFIFO implements Queue<Integer> {
     private int tail;  // Índice donde se insertará el próximo elemento
     private int size;  // Cantidad de elementos actuales en la cola
 
-    // Constructor solicitado
     public IntFIFO(int capacity) {
         if (capacity <= 0) {
-            capacity = 10; // Capacidad por defecto por seguridad
+            capacity = 10;
         }
         this.buffer = new Integer[capacity];
         this.head = 0;
@@ -23,15 +22,11 @@ public class IntFIFO implements Queue<Integer> {
 
     @Override
     public boolean insertElement(Integer e) {
-        // Comprobar si necesitamos redimensionar el arreglo
         if (size == buffer.length) {
             resize();
         }
 
-        // Insertamos el elemento en la posición actual de 'tail'
         buffer[tail] = e;
-
-        // Avanzamos 'tail' de forma circular
         tail = (tail + 1) % buffer.length;
         size++;
 
@@ -42,13 +37,11 @@ public class IntFIFO implements Queue<Integer> {
         int newCapacity = buffer.length * 2;
         Integer[] newBuffer = new Integer[newCapacity];
 
-        // Copiamos los elementos en el nuevo arreglo, desenrollando la circularidad
         for (int i = 0; i < size; i++) {
             newBuffer[i] = buffer[(head + i) % buffer.length];
         }
 
         this.buffer = newBuffer;
-        // Reiniciamos los punteros
         this.head = 0;
         this.tail = size;
     }
@@ -68,9 +61,8 @@ public class IntFIFO implements Queue<Integer> {
         }
 
         Integer value = buffer[head];
-        buffer[head] = null; // Ayudamos al Recolector de Basura (Garbage Collector)
+        buffer[head] = null;
 
-        // Avanzamos 'head' de forma circular
         head = (head + 1) % buffer.length;
         size--;
 

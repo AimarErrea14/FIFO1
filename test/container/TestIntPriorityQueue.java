@@ -33,7 +33,7 @@ public class TestIntPriorityQueue {
         IntPriorityQueue queue = new IntPriorityQueue(2);
         queue.insertElement(5);
         queue.insertElement(10);
-        queue.insertElement(20); // Fuerza el resize()
+        queue.insertElement(20);
 
         assertEquals(3, queue.size());
         assertEquals(20, queue.popElement());
