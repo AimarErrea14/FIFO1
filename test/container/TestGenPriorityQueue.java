@@ -13,6 +13,7 @@ public class TestGenPriorityQueue {
         assertEquals(0, queue.size());
     }
 
+
     @Test
     public void test_stringPriorityBehavior() {
         GenPriorityQueue<String> queue = new GenPriorityQueue<>(5);
