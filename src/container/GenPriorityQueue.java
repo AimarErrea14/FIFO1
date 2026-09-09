@@ -3,19 +3,16 @@ package container;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-// La clase acepta un tipo E que obligatoriamente implementa Comparable
 public class GenPriorityQueue<E extends Comparable<E>> implements Queue<E> {
 
     private E[] heap;
     private int size;
 
-    // Constructor solicitado
     @SuppressWarnings("unchecked")
     public GenPriorityQueue(int capacity) {
         if (capacity <= 0) {
             capacity = 10;
         }
-        // Solución al Type Erasure usando casting, como pide el enunciado
         this.heap = (E[]) new Comparable[capacity];
         this.size = 0;
     }
@@ -46,7 +43,7 @@ public class GenPriorityQueue<E extends Comparable<E>> implements Queue<E> {
         size--;
 
         heap[0] = heap[size];
-        heap[size] = null; // Evitar fugas de memoria
+        heap[size] = null;
 
         if (size > 0) {
             siftDown(0);
@@ -70,7 +67,6 @@ public class GenPriorityQueue<E extends Comparable<E>> implements Queue<E> {
         return null;
     }
 
-    // --- MÉTODOS PRIVADOS AUXILIARES ---
 
     @SuppressWarnings("unchecked")
     private void resize() {
@@ -83,7 +79,6 @@ public class GenPriorityQueue<E extends Comparable<E>> implements Queue<E> {
         while (index > 0) {
             int parentIndex = (index - 1) / 2;
 
-            // Reemplazamos el operador ">" por "compareTo"
             if (heap[index].compareTo(heap[parentIndex]) > 0) {
                 swap(index, parentIndex);
                 index = parentIndex;
@@ -99,7 +94,6 @@ public class GenPriorityQueue<E extends Comparable<E>> implements Queue<E> {
             int rightChild = 2 * index + 2;
             int largest = index;
 
-            // Reemplazamos el operador ">" por "compareTo"
             if (leftChild < size && heap[leftChild].compareTo(heap[largest]) > 0) {
                 largest = leftChild;
             }
