@@ -2,13 +2,12 @@ package container;
 
 import java.util.NoSuchElementException;
 
-public interface Queue<Integer> extends Iterable<Integer> {
+public interface Queue<E> extends Iterable<E> {
     /** Add specified element into this queue, increase capacity of the queue if not enough space
      *
      * @return true if the element was successfully added
-     * es generica la interfaz
      */
-    boolean insertElement(Integer e);
+    boolean insertElement(E e);
 
     /**
      * Retrieves (without removing) the highest element of this queue
@@ -16,7 +15,7 @@ public interface Queue<Integer> extends Iterable<Integer> {
      * @return the highest element of this queue
      * @throws NoSuchElementException if this queue is empty
      */
-    Integer element();
+    E element();
 
     /**
      * Retrieves (and remove) the highest element of this queue
@@ -24,7 +23,7 @@ public interface Queue<Integer> extends Iterable<Integer> {
      * @return the highest element of this queue
      * @throws NoSuchElementException if this queue is empty
      */
-    Integer popElement();
+    E popElement();
 
     /** Returns true if this queue contains no elements. */
     boolean isEmpty();

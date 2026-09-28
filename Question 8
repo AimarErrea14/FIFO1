@@ -1,0 +1,12 @@
+EXERCISE 8 - THEORETICAL QUESTIONS
+
+1. What happens to the temporal order of elements that have the exact same priority?
+In this heap-based implementation, the temporal order (FIFO) is not guaranteed for elements with the same priority. This means our priority queue is "unstable". The max-heap property only ensures that a parent node is greater than or equal to its children. When we insert new elements or remove the root, the siftUp and siftDown methods swap elements around the array to restore the tree structure, which can easily scramble the original insertion order of identical values.
+
+2. Alternative data structures for a priority queue (Pros and Cons)
+Instead of a heap, we could use a simple Sorted Array (or Sorted Linked List).
+- Advantage: Getting or removing the highest priority element is incredibly fast, just O(1), because the maximum element is always waiting at the very end of the array.
+- Disadvantage: Inserting a new element is very slow, O(N). We have to search for the correct spot and then shift all the subsequent elements one position to the right to make room. The heap is much more balanced, offering O(log N) for both insertions and removals.
+
+3. How could a user break the class invariant?
+A user could easily break the heap invariant if they use the generic queue (GenPriorityQueue or GenPriorityQueueCmp) with mutable objects, and then change the state of those objects *after* inserting them. For example, if a user inserts a custom Task object with priority 5, and later uses a setter in their main code to change that priority to 100, the queue won't be aware of this change. The siftUp or siftDown methods won't trigger, leaving the heap completely broken and causing popElement() to return the wrong items.
