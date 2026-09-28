@@ -1,41 +1,49 @@
 package container;
 
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * A priority queue implementation specifically for Integer elements.
- * This class uses a max-heap data structure backed by an array to ensure
- * that the highest integer value is always at the head of the queue.
+ * A generic priority queue implementation based on a heap data structure.
+ * Unlike standard priority queues that rely on natural ordering, this class uses
+ * a provided {@link Comparator} to determine the priority of its elements.
+ *
+ * @param <E> the type of elements held in this collection
  */
-public class IntPriorityQueue implements Queue<Integer> {
+public class GenPriorityQueueCmp<E> implements Queue<E> {
 
-    private Integer[] heap;
+    private E[] heap;
     private int size;
+    private Comparator<? super E> comparator;
 
     /**
-     * Constructs a new IntPriorityQueue with the specified initial capacity.
+     * Constructs a new GenPriorityQueueCmp with the specified initial capacity and comparator.
      * If the provided capacity is less than or equal to zero, a default capacity of 10 is used.
      *
-     * @param capacity the initial capacity of the priority queue
+     * @param capacity   the initial capacity of the priority queue
+     * @param comparator the comparator used to order the elements in this queue
      */
-    public IntPriorityQueue(int capacity) {
+    @SuppressWarnings("unchecked")
+    public GenPriorityQueueCmp(int capacity, Comparator<? super E> comparator) {
         if (capacity <= 0) {
             capacity = 10;
         }
-        this.heap = new Integer[capacity];
+        // Since we don't extend Comparable, we instantiate an array of Object
+        this.heap = (E[]) new Object[capacity];
         this.size = 0;
+        this.comparator = comparator;
     }
 
     /**
-     * Inserts the specified integer into the priority queue.
-     * The capacity of the queue is automatically increased if it is full.
+     * Inserts the specified element into the priority queue.
+     * The capacity of the queue is automatically increased if necessary.
      *
-     * @param e the integer to add
+     * @param e the element to add
      * @return true if the element was successfully added
      */
     @Override
-    public boolean insertElement(Integer e) {
+    public boolean insertElement(E e) {
         if (size == heap.length) {
             resize();
         }
@@ -47,28 +55,28 @@ public class IntPriorityQueue implements Queue<Integer> {
     }
 
     /**
-     * Retrieves, but does not remove, the highest priority element (the maximum integer).
+     * Retrieves, but does not remove, the highest priority element in this queue.
      *
      * @return the highest priority element
      * @throws NoSuchElementException if the queue is empty
      */
     @Override
-    public Integer element() {
+    public E element() {
         if (isEmpty()) throw new NoSuchElementException("The queue is empty");
         return heap[0];
     }
 
     /**
-     * Retrieves and removes the highest priority element (the maximum integer).
+     * Retrieves and removes the highest priority element in this queue.
      *
      * @return the highest priority element
      * @throws NoSuchElementException if the queue is empty
      */
     @Override
-    public Integer popElement() {
+    public E popElement() {
         if (isEmpty()) throw new NoSuchElementException("The queue is empty");
 
-        Integer rootValue = heap[0];
+        E rootValue = heap[0];
         size--;
 
         heap[0] = heap[size];
@@ -103,15 +111,13 @@ public class IntPriorityQueue implements Queue<Integer> {
 
     /**
      * Returns an iterator over the elements in this priority queue.
-     * Note: The iterator traverses the underlying array directly and does not
-     * guarantee any specific priority-based ordering.
+     * Note: The iterator does not guarantee any specific traversal order.
      *
      * @return an Iterator over the elements in the queue
      */
     @Override
-    public Iterator<Integer> iterator() {
-        return new Iterator<Integer>() {
-
+    public Iterator<E> iterator() {
+        return new Iterator<E>() {
             private int currentIndex = 0;
 
             @Override
@@ -120,7 +126,7 @@ public class IntPriorityQueue implements Queue<Integer> {
             }
 
             @Override
-            public Integer next() {
+            public E next() {
                 if (!hasNext()) {
                     throw new NoSuchElementException("No more elements in the queue");
                 }
@@ -134,14 +140,16 @@ public class IntPriorityQueue implements Queue<Integer> {
     /**
      * Doubles the capacity of the underlying array when the queue is full.
      */
+    @SuppressWarnings("unchecked")
     private void resize() {
-        Integer[] newHeap = new Integer[heap.length * 2];
+        E[] newHeap = (E[]) new Object[heap.length * 2];
         System.arraycopy(heap, 0, newHeap, 0, size);
         this.heap = newHeap;
     }
 
     /**
-     * Restores the max-heap property by moving a newly inserted element up the tree.
+     * Restores the heap property by moving a newly inserted element up the tree
+     * based on the provided comparator.
      *
      * @param index the index of the element to move up
      */
@@ -149,9 +157,9 @@ public class IntPriorityQueue implements Queue<Integer> {
         while (index > 0) {
             int parentIndex = (index - 1) / 2;
 
-            if (heap[index] > heap[parentIndex]) {
+            if (comparator.compare(heap[index], heap[parentIndex]) > 0) {
                 swap(index, parentIndex);
-                index = parentIndex; // Move up one level
+                index = parentIndex;
             } else {
                 break;
             }
@@ -159,8 +167,8 @@ public class IntPriorityQueue implements Queue<Integer> {
     }
 
     /**
-     * Restores the max-heap property by moving an element down the tree.
-     * This is typically called after the root element is removed.
+     * Restores the heap property by moving an element down the tree
+     * based on the provided comparator (used after extracting the root).
      *
      * @param index the index of the element to move down
      */
@@ -170,17 +178,17 @@ public class IntPriorityQueue implements Queue<Integer> {
             int rightChild = 2 * index + 2;
             int largest = index;
 
-            if (leftChild < size && heap[leftChild] > heap[largest]) {
+            if (leftChild < size && comparator.compare(heap[leftChild], heap[largest]) > 0) {
                 largest = leftChild;
             }
 
-            if (rightChild < size && heap[rightChild] > heap[largest]) {
+            if (rightChild < size && comparator.compare(heap[rightChild], heap[largest]) > 0) {
                 largest = rightChild;
             }
 
             if (largest != index) {
                 swap(index, largest);
-                index = largest; // Move down one level
+                index = largest;
             } else {
                 break;
             }
@@ -191,7 +199,7 @@ public class IntPriorityQueue implements Queue<Integer> {
      * Swaps two elements in the heap array.
      */
     private void swap(int i, int j) {
-        Integer temp = heap[i];
+        E temp = heap[i];
         heap[i] = heap[j];
         heap[j] = temp;
     }
